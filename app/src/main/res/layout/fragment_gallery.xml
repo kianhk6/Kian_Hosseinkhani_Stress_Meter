@@ -1,0 +1,95 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/GraphText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/a_graph_showing_your_stress_levels"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:gravity="center"
+
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp" />
+
+    <lecho.lib.hellocharts.view.LineChartView
+        android:id="@+id/chart"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_weight="1"
+        android:padding="8dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- Summary TextView -->
+        <TextView
+            android:id="@+id/summaryTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/summary_of_results"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:fillViewport="true"
+            android:layout_below="@id/summaryTextView">
+
+            <TableLayout
+                android:id="@+id/dataTable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*">
+
+                <!-- Header Row -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/darker_gray"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Index" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Date" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Time" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Stress Level" />
+                </TableRow>
+            </TableLayout>
+        </ScrollView>
+    </RelativeLayout>
+</LinearLayout>
