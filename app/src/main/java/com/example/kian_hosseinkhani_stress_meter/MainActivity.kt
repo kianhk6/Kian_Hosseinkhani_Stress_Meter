@@ -12,6 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kian_hosseinkhani_stress_meter.databinding.ActivityMainBinding
+import com.example.kian_hosseinkhani_stress_meter.ui.visualization.VisualizationFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,7 +28,6 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
-
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -42,8 +42,10 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
-
-
+    // in result viewer tab when back button is pressed quit the app similar to the demo
+    override fun onBackPressed() {
+        finish()
+    }
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()

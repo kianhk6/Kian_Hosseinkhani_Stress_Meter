@@ -54,7 +54,6 @@ class HomeFragment : Fragment() {
     }
 
     private var vibrator: Vibrator? = null
-    private var isVibrating = false
 
     private var mediaPlayer: MediaPlayer? = null
 
@@ -69,18 +68,6 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-        vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        val pattern = longArrayOf(0, 200, 100)
-
-        // Check if the device has a vibrator
-        if(isFirstOpen){
-            if (vibrator!!.hasVibrator()) {
-                vibrator!!.vibrate(pattern, 1)
-                isVibrating = true
-            }
-        }
-
 
         val moreImagesButton: Button = binding.moreImagesButton
         val gridView: GridView = binding.gridView
@@ -104,26 +91,17 @@ class HomeFragment : Fragment() {
             mediaPlayer = MediaPlayer.create(context, R.raw.sound)
             mediaPlayer?.isLooping = false // To loop the sound like the vibration
             mediaPlayer?.start()
+            vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
-            // Stop vibration once an image is selected
-            if (isVibrating) {
-                isFirstOpen = false
-                vibrator!!.cancel()
-                isVibrating = false
+            if (vibrator!!.hasVibrator()) {
+                // just on small vibration for better user experience
+                vibrator!!.vibrate(600)
             }
+
         }
 
         return root
     }
-    override fun onPause() {
-        super.onPause()
-        isFirstOpen = false
-
-        if (vibrator != null) {
-            vibrator!!.cancel()
-        }
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

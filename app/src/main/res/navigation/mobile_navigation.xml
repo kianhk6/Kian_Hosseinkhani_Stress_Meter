@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.example.kian_hosseinkhani_stress_meter.ui.gallery.GalleryFragment"
+        android:name="com.example.kian_hosseinkhani_stress_meter.ui.visualization.VisualizationFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_visualization" />
 
     <fragment
         android:id="@+id/nav_slideshow"

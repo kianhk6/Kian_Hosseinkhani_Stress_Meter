@@ -1,4 +1,4 @@
-package com.example.kian_hosseinkhani_stress_meter.ui.gallery
+package com.example.kian_hosseinkhani_stress_meter.ui.visualization
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,8 +9,7 @@ import android.view.ViewGroup
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.example.kian_hosseinkhani_stress_meter.databinding.FragmentGalleryBinding
+import com.example.kian_hosseinkhani_stress_meter.databinding.FragmentVisualizationBinding
 import lecho.lib.hellocharts.model.Line
 import lecho.lib.hellocharts.model.LineChartData
 import lecho.lib.hellocharts.model.PointValue
@@ -18,14 +17,13 @@ import java.io.File
 import android.os.Environment
 import android.graphics.Color
 import android.util.TypedValue
-import com.example.kian_hosseinkhani_stress_meter.ui.home.HomeFragment
 import lecho.lib.hellocharts.gesture.ZoomType
 import lecho.lib.hellocharts.model.Axis
 
 
-class GalleryFragment : Fragment() {
+class VisualizationFragment : Fragment() {
 
-    private var _binding: FragmentGalleryBinding? = null
+    private var _binding: FragmentVisualizationBinding? = null
     private val binding get() = _binding!!
 
     @SuppressLint("SetTextI18n")
@@ -34,10 +32,8 @@ class GalleryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        _binding = FragmentGalleryBinding.inflate(inflater, container, false)
+        _binding = FragmentVisualizationBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
 
         // Ensure you have permissions for reading external storage.
         val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -46,16 +42,10 @@ class GalleryFragment : Fragment() {
         if(file.exists()) {
             val lines = file.readLines()
             val values = mutableListOf<PointValue>()
-            var index = 0
-
-
-
-
-            for(line in lines) {
+            for((index, line) in lines.withIndex()) {
                 val parts = line.split(",")
                 val date = parts[0]
                 val time = parts[1]
-                val numericTime = parts[2].replace(" ", "").toLong()
                 val stress = parts[3].toFloat()
 
                 values.add(PointValue(index.toFloat(), stress))
@@ -68,7 +58,8 @@ class GalleryFragment : Fragment() {
                 val timeCell = TextView(context)
                 val stressCell = TextView(context)
 
-                indexCell.text = (index + 1).toString() // +1 to start index from 1
+                // +1 to start index from 1
+                indexCell.text = (index + 1).toString()
                 dateCell.text = date
                 timeCell.text = time
                 stressCell.text = stress.toString()
@@ -93,7 +84,6 @@ class GalleryFragment : Fragment() {
                 divider.setBackgroundColor(Color.BLACK)
                 binding.dataTable.addView(divider)
 
-                index++
             }
 
             val line = Line(values)
@@ -109,14 +99,13 @@ class GalleryFragment : Fragment() {
             data.axisXBottom = axisX
             data.axisYLeft = axisY
 
+            // set up the chart
             binding.chart.isZoomEnabled = true
             binding.chart.isScrollEnabled = true
             binding.chart.zoomType = ZoomType.HORIZONTAL_AND_VERTICAL
             binding.chart.isInteractive = true
-
             binding.chart.lineChartData = data
         }
-
 
         return root
     }

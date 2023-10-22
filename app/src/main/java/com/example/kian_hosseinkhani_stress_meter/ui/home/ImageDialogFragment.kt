@@ -31,7 +31,7 @@ class ImageDialogFragment(private val imageRes: Int, private val stressLevel: In
         // Handle submission here, for now, we'll just dismiss the dialog
         submitButton.setOnClickListener {
             saveToCSV()
-            dismiss()
+            requireActivity().finish()
         }
 
         return view
