@@ -1,19 +1,21 @@
 package com.example.kian_hosseinkhani_stress_meter.ui.home
 
 import ImageAdapter
+import android.content.Context
+import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
+import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.example.kian_hosseinkhani_stress_meter.databinding.FragmentHomeBinding
 import android.widget.GridView
-import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import com.example.kian_hosseinkhani_stress_meter.R
 import com.example.kian_hosseinkhani_stress_meter.R.drawable
+import com.example.kian_hosseinkhani_stress_meter.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
@@ -45,7 +47,19 @@ class HomeFragment : Fragment() {
         )
 
     )
+    companion object {
+        // variable to track if we entering home for the first time
+        // this is for the vibrator logic
+        var isFirstOpen = true
+    }
 
+    private var vibrator: Vibrator? = null
+    private var isVibrating = false
+
+    private var mediaPlayer: MediaPlayer? = null
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,6 +69,18 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        val pattern = longArrayOf(0, 200, 100)
+
+        // Check if the device has a vibrator
+        if(isFirstOpen){
+            if (vibrator!!.hasVibrator()) {
+                vibrator!!.vibrate(pattern, 1)
+                isVibrating = true
+            }
+        }
+
 
         val moreImagesButton: Button = binding.moreImagesButton
         val gridView: GridView = binding.gridView
@@ -75,10 +101,29 @@ class HomeFragment : Fragment() {
             val imageResource = imageSets[currentSet][position]
             val dialogFragment = ImageDialogFragment(imageResource, position)
             dialogFragment.show(childFragmentManager, "ImageDialog")
+            mediaPlayer = MediaPlayer.create(context, R.raw.sound)
+            mediaPlayer?.isLooping = false // To loop the sound like the vibration
+            mediaPlayer?.start()
+
+            // Stop vibration once an image is selected
+            if (isVibrating) {
+                isFirstOpen = false
+                vibrator!!.cancel()
+                isVibrating = false
+            }
         }
 
         return root
     }
+    override fun onPause() {
+        super.onPause()
+        isFirstOpen = false
+
+        if (vibrator != null) {
+            vibrator!!.cancel()
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

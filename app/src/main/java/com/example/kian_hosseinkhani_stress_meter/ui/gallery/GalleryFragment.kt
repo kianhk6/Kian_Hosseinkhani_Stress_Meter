@@ -18,6 +18,7 @@ import java.io.File
 import android.os.Environment
 import android.graphics.Color
 import android.util.TypedValue
+import com.example.kian_hosseinkhani_stress_meter.ui.home.HomeFragment
 import lecho.lib.hellocharts.gesture.ZoomType
 import lecho.lib.hellocharts.model.Axis
 
@@ -36,6 +37,7 @@ class GalleryFragment : Fragment() {
 
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
 
         // Ensure you have permissions for reading external storage.
         val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
