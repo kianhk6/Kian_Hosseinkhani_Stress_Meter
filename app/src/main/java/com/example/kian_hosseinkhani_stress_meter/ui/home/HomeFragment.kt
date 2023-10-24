@@ -54,6 +54,7 @@ class HomeFragment : Fragment() {
     }
 
     private var vibrator: Vibrator? = null
+    private var isVibrating = false
 
     private var mediaPlayer: MediaPlayer? = null
 
@@ -68,6 +69,22 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        val pattern = longArrayOf(0, 200, 100)
+
+        // Check if the device has a vibrator
+        if(isFirstOpen){
+            if (vibrator!!.hasVibrator()) {
+                vibrator!!.vibrate(pattern, 1)
+                isVibrating = true
+
+                // Initialize and start MediaPlayer
+                mediaPlayer = MediaPlayer.create(context, R.raw.sound)
+                mediaPlayer?.isLooping = true // To loop the sound like the vibration
+                mediaPlayer?.start()
+            }
+        }
 
         val moreImagesButton: Button = binding.moreImagesButton
         val gridView: GridView = binding.gridView
@@ -88,24 +105,37 @@ class HomeFragment : Fragment() {
             val imageResource = imageSets[currentSet][position]
             val dialogFragment = ImageDialogFragment(imageResource, position)
             dialogFragment.show(childFragmentManager, "ImageDialog")
-            mediaPlayer = MediaPlayer.create(context, R.raw.sound)
-            mediaPlayer?.isLooping = false // To loop the sound like the vibration
-            mediaPlayer?.start()
-            vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
-            if (vibrator!!.hasVibrator()) {
-                // just on small vibration for better user experience
-                vibrator!!.vibrate(600)
+            // Stop vibration once an image is selected
+            if (isVibrating) {
+                isFirstOpen = false
+                vibrator!!.cancel()
+                isVibrating = false
+
+                mediaPlayer?.stop()
+                mediaPlayer?.release()
+                mediaPlayer = null
             }
-
         }
 
         return root
     }
+    override fun onPause() {
+        super.onPause()
+        isFirstOpen = false
+
+        if (vibrator != null) {
+            vibrator!!.cancel()
+        }
+
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer = null
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 }
-
